@@ -44,6 +44,10 @@ Legacy8sBot
   - `!change_location <new_location>`: Change the location of your existing account.
   - `!view_stats`: View your current stats.
   - Join game queues by clicking the buttons provided in the Discord channel.
+ 
+## Demonstration
+
+https://youtu.be/PT2EeLSU1jE
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a pull request or open an issue for any enhancements or bug fixes.
