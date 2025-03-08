@@ -116,6 +116,8 @@ class VotingManager:
             print("Channel or message not found. It may have been deleted.")
 
     async def check_votes(self, interaction: discord.Interaction, voting):
+        #game = self.category.name.split()[0]  # Extract the game name from the category name
+        #required_votes = 6 if game in ["MW 2019", "Black Ops 4"] else 5
         required_votes = 2  # testing value
         if voting.team1_votes >= required_votes:
             await self.finalize_match(interaction, "Team 1")
@@ -142,7 +144,7 @@ class VotingManager:
             WHEN sr BETWEEN 1801 AND 2400 THEN 'Gold'
             WHEN sr BETWEEN 2401 AND 3000 THEN 'Platinum'
             WHEN sr BETWEEN 3001 AND 3600 THEN 'Diamond'
-            WHEN sr BETWEEN 3601 AND 4200 THEN 'Crimson'
+            WHEN sr BETWEEN 3601 AND 4200 THEN 'Master'
             WHEN sr BETWEEN 4201 AND 4800 THEN 'Iridescent'
             WHEN sr > 4801 THEN 'Grandmaster'
             ELSE rank
@@ -161,6 +163,10 @@ class VotingManager:
                 cursor.execute('UPDATE users SET sr = sr - 11, mp_losses = mp_losses + 1 WHERE id = ?', (member.id,))
             await self.update_rank(member.id)
         conn.commit()
+        
+        # Cancel the schedule_extended_check loop
+        self.match_manager.cancel_extended_check = True
+        
         await asyncio.sleep(5)
         await self.match_manager.delete_category_and_channels(self.match_manager.category)
         async with self.match_manager.create_teams_lock:

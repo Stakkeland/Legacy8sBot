@@ -64,17 +64,16 @@ class MatchManager:
         embed.add_field(name="Team 1", value=" ", inline=False)
         for i, member in enumerate(team1):
             await self.create_account(interaction, member)
-            cursor.execute('SELECT location, rank FROM users WHERE id = ?', (member.id,))
-            location, rank = cursor.fetchone()
-            player_info = f"{member.name} - Location: {location} - Rank: {rank}"
-            embed.add_field(name=i+1, value=player_info, inline=False)
+            cursor.execute('SELECT location FROM users WHERE id = ?', (member.id,))
+            location = cursor.fetchone()[0]
+            embed.add_field(name=i+1, value=f"{member.mention}   -   {location}", inline=False)
         embed.add_field(name="Team 2", value=" ", inline=False)
         for i, member in enumerate(team2):
             await self.create_account(interaction, member)
-            cursor.execute('SELECT location, rank FROM users WHERE id = ?', (member.id,))
-            location, rank = cursor.fetchone()
-            player_info = f"{member.name} - Location: {location} - Rank: {rank}"
-            embed.add_field(name=i+1, value=player_info, inline=False)
+            cursor.execute('SELECT location FROM users WHERE id = ?', (member.id,))
+            location = cursor.fetchone()[0]
+            embed.add_field(name=i+1, value=f"{member.mention}   -   {location}", inline=False)
+        embed.add_field(name="\u200b", value="\u200b", inline=False)
 
         locations = [cursor.execute('SELECT location FROM users WHERE id = ?', (member.id,)).fetchone()[0] for member in team1 + team2]
         location_counts = Counter(locations)
@@ -82,10 +81,10 @@ class MatchManager:
 
         if len(most_common_locations) > 1 and most_common_locations[0][1] == most_common_locations[1][1]:
             tied_locations = [loc for loc, count in most_common_locations if count == most_common_locations[0][1]]
-            embed.add_field(name="Recommended Host Locations:", value=", ".join(tied_locations), inline=True)
+            embed.add_field(name="Recommended Host Locations:", value=", ".join(tied_locations), inline=False)
         else:
             most_common_location = most_common_locations[0][0]
-            embed.add_field(name="Recommended Host Location:", value=most_common_location, inline=True)
+            embed.add_field(name="Recommended Host Location:", value=most_common_location, inline=False)
 
         return embed
 
@@ -142,7 +141,7 @@ class MatchManager:
                     await self.schedule_extended_check(category, members)
                     return
                 else:
-                    await countdown_message.edit(content=f"Channels and Match will end if all users do not join in the next {i} minutes")
+                    await countdown_message.edit(content=f"Channels and Match will end if all users do not join in the next {i+1} minutes")
                     await asyncio.sleep(1)
     
         for i in range(60, 0, -1):
@@ -170,7 +169,7 @@ class MatchManager:
                 await self.delete_category_and_channels(category)
                 return
             await asyncio.sleep(5 * 60)
-
+ 
     def all_members_in_voice_channels(self, category, members):
         return all(any(member in vc.members for vc in category.voice_channels) for member in members)
 

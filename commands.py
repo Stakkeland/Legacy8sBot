@@ -50,6 +50,21 @@ def setup_commands(bot):
             embed.add_field(name="Matches Played", value=mp, inline=True)
             embed.add_field(name="Matches Won", value=mp_wins, inline=True)
             embed.add_field(name="Matches Lost", value=mp_losses, inline=True)
-            if ctx.author.avatar:
-                embed.set_thumbnail(url=ctx.author.avatar.url)
-            await ctx.send(embed=embed)
+            
+            # Add logo based on rank
+            rank_logo_map = {
+                "Bronze": "logobronze.jpg",
+                "Silver": "logosilver.jpg",
+                "Gold": "logogold.jpg",
+                "Platinum": "logoplatinum.jpg",
+                "Diamond": "logodiamond.jpg",
+                "Master": "logomaster.jpg",
+                "Grandmaster": "logograndmaster.jpg",
+                "Overlord" : "logooverlord.jpg"
+            }
+            logo_filename = rank_logo_map.get(rank, "logobronze.jpg")
+            logo_path = f"c:/Legacy8sBot/logopictures/{logo_filename}"
+            file = discord.File(logo_path, filename=logo_filename)
+            embed.set_thumbnail(url=f"attachment://{logo_filename}")
+            
+            await ctx.send(file=file, embed=embed)

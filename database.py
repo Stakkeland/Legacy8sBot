@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     mp_wins INTEGER,
     mp_losses INTEGER,
     sr INTEGER,
-    rank TEXT NOT NULL CHECK(rank IN ('bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grandmaster', 'overlord')),
+    rank TEXT NOT NULL CHECK(rank IN ('Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Master', 'Grandmaster', 'Overlord')),
     location TEXT NOT NULL CHECK(location IN ('west', 'central', 'east', 'eu', 'china', 'australia', 'south america', 'africa'))
 )
 ''')
