@@ -17,6 +17,7 @@ class MatchManager:
         self.category = None
 
     def create_mapset(self, game):
+        '''Creates a mapset embed for the given Call of Duty title'''
         if game in ["MWIII 2023", "MWII 2022", "Vanguard", "Cold War", "MW 2019", "Black Ops 4", "World War II", "Infinite Warfare", "Black Ops 3", "Advanced Warfare", "Black Ops 2"]:
             hardpoint1 = random.choice(hardpoints[game])
             hardpoint2 = random.choice(hardpoints[game])
@@ -50,6 +51,7 @@ class MatchManager:
         return embed
 
     async def create_account(self, interaction: discord.Interaction, user: discord.User):
+        '''Creates an account for a user with a location of unknown'''
         cursor.execute('SELECT * FROM users WHERE id = ?', (user.id,))
         account = cursor.fetchone()
         if account is None:
@@ -60,6 +62,7 @@ class MatchManager:
             conn.commit()
 
     async def create_teams_embed(self, interaction, team1, team2):
+        '''Creates an embed with the location and names for each team and its players'''
         embed = discord.Embed(title="Players", color=discord.Color.green())
         embed.add_field(name="Team 1", value=" ", inline=False)
         for i, member in enumerate(team1):
@@ -89,6 +92,7 @@ class MatchManager:
         return embed
 
     async def create_teams(self, interaction, channel, queue, game):
+        '''Randomly assigns and creates teams from the queue'''
         async with self.create_teams_lock:
             if hasattr(self, 'category') and self.category is not None:
                 return
@@ -132,6 +136,7 @@ class MatchManager:
         await self.schedule_initial_check(self.category, 1, self.team1 + self.team2, countdown_message, match_channel)
 
     async def schedule_initial_check(self, category, delay_mins, members, countdown_message, match_channel):
+        '''Checks that all users have entered required voice channels. If 4 mins have passed it cancels the match'''
         voting = Voting()
         for i in range(delay_mins, 0, -1):
             for j in range(60, 0, -1):
@@ -157,6 +162,8 @@ class MatchManager:
         await self.delete_category_and_channels(category)
 
     async def schedule_extended_check(self, category, members):
+        '''This checks the voice channels to ensure that all users are still active every 5 mins. If no vote
+        is given and the voice channels are empty then the match is cancelled'''
         for _ in range(35):
             if category not in category.guild.categories:
                 return
@@ -171,9 +178,11 @@ class MatchManager:
             await asyncio.sleep(5 * 60)
  
     def all_members_in_voice_channels(self, category, members):
+        '''Finds if all members needed are in voice channels'''
         return all(any(member in vc.members for vc in category.voice_channels) for member in members)
 
     async def delete_category_and_channels(self, category):
+        '''Deletes the category and channels of the given match'''
         try:
             for channel in category.channels:
                 try:

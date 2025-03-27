@@ -6,20 +6,28 @@ from commands import setup_commands
 import asyncio
 
 BOT_TOKEN = ""
-CHANNEL_ID = 1333649194639949825
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 @bot.event
 async def on_ready():
+    print(f"Logged in as {bot.user}")
+
+active_channels = set()
+
+@bot.command(name="start")
+async def start(ctx):
     try:
-        channel = bot.get_channel(CHANNEL_ID)
-        if channel is None:
-            print(f"Channel with ID {CHANNEL_ID} not found.")
+        channel = ctx.channel
+
+        if channel.id in active_channels:
+            await ctx.send("A queue manager is already active in this channel.")
             return
 
+        active_channels.add(channel.id)
+
         embed = discord.Embed(
-            description="Join a queue by clicking it's button below.",
+            description="Join a queue by clicking its button below.",
             title="Queue Manager"
         )
         embed.set_footer(text="CDL Legacy 8's")
@@ -47,7 +55,7 @@ async def on_ready():
 
         bot.loop.create_task(update_embed())
     except Exception as e:
-        print(f"Exception in on_ready: {e}")
+        print(f"Exception in start command: {e}")
 
 def main():
     setup_commands(bot)

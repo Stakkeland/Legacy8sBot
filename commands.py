@@ -5,6 +5,7 @@ import discord
 def setup_commands(bot):
     @bot.command(name='create_account')
     async def create_account(ctx, location):
+        '''Create an account for the user'''
         valid_locations = ['west', 'central', 'east', 'eu', 'china', 'australia', 'south america', 'africa', 'unknown']
         if location.lower() not in valid_locations:
             await ctx.send(f"Invalid location. Please choose from: {', '.join(valid_locations)}")
@@ -23,6 +24,7 @@ def setup_commands(bot):
 
     @bot.command(name='change_location')
     async def change_location(ctx, new_location):
+        '''Change the location of the users account'''
         valid_locations = ['west', 'central', 'east', 'eu', 'china', 'australia', 'south america', 'africa', 'unknown']
         if new_location.lower() not in valid_locations:
             await ctx.send(f"Invalid location. Please choose from: {', '.join(valid_locations)}")
@@ -38,6 +40,7 @@ def setup_commands(bot):
 
     @bot.command(name='view_stats')
     async def view_stats(ctx):
+        '''Sends an embed message showing most important stats of the user'''
         cursor.execute('SELECT name, sr, rank, mp, mp_wins, mp_losses FROM users WHERE id = ?', (ctx.author.id,))
         user = cursor.fetchone()
         if user is None:
