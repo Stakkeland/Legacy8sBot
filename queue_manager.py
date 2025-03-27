@@ -8,7 +8,7 @@ from maps import queues, hardpoints, snds, dominations, ctfs
 
 class QueueView(discord.ui.View):
     def __init__(self):
-        super().__init__()
+        super().__init__(timeout=None)
         self.queues = queues
         self.create_buttons()
         self.match_manager = MatchManager(self)

@@ -34,6 +34,7 @@ async def start(ctx):
 
         view = QueueView()
         embed_message = None
+        #embed_message = await channel.send(embed=embed, view=view)
 
         async def update_embed():
             nonlocal embed_message
@@ -51,7 +52,7 @@ async def start(ctx):
                     embed_message = await channel.send(embed=embed, view=view)
                 except discord.HTTPException as e:
                     print(f"HTTPException occurred: {e}")
-                await asyncio.sleep(1)
+                await asyncio.sleep(2)
 
         bot.loop.create_task(update_embed())
     except Exception as e:
