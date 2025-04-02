@@ -20,6 +20,7 @@ class Voting:
 
 class VotingManager:
     def __init__(self, match_manager):
+        #super().__init__(timeout=None)
         self.match_manager = match_manager
 
     async def send_voting_buttons(self, match_channel, voting):
@@ -124,9 +125,8 @@ class VotingManager:
 
     async def check_votes(self, interaction: discord.Interaction, voting):
         '''Checks the votes by the users, once 1 reaches the threshold it finalizes the match or cancels'''
-        #game = self.category.name.split()[0]  # Extract the game name from the category name
-        #required_votes = 6 if game in ["MW 2019", "Black Ops 4"] else 5
-        required_votes = 2  # testing value
+        game = self.match_manager.category.name.split()[0]  # Extract the game name from the category name
+        required_votes = 6 if game in ["MW 2019", "Black Ops 4"] else 2  # Adjust the threshold based on the game (should be 5 instead of 2)
         if voting.team1_votes >= required_votes:
             await self.finalize_match(interaction, "Team 1")
         elif voting.team2_votes >= required_votes:
